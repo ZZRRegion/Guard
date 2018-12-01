@@ -13,14 +13,15 @@ namespace GuardCount
     {
         private Collects.TcpDeviceCollect tcpDevice;
         private Dictionary<int, ReadSwitch> AllSwitch { get; set; } = new Dictionary<int, ReadSwitch>();
-        private Dictionary<int, bool> WriteVar = new Dictionary<int, bool>();
         private RunCollect Run { get; set; } = new RunCollect();
         //private Collects.ComDeviceCollect deviceCollect = new Collects.ComDeviceCollect();
         public FrmMain()
         {
             InitializeComponent();
+            this.Text += $" [V{DevCommon.Version},{DevCommon.VersionTime}]";
             this.Run.AllVariable = Variable.GetConfig();
             this.LoadSwitch();
+            this.pnl.AutoScroll = true;
         }
 
         private void TcpDevice_ValueChangedEvent(Variable variable)
@@ -37,7 +38,7 @@ namespace GuardCount
             int left = 10;
             foreach(KeyValuePair<int, Variable> item in this.Run.AllVariable)
             {
-                ReadSwitch readSwitch = new ReadSwitch(item.Value, this.WriteVar);
+                ReadSwitch readSwitch = new ReadSwitch(item.Value, this.Run);
                 this.pnl.Controls.Add(readSwitch);
                 readSwitch.Location = new Point(left, top);
                 left += readSwitch.Width + 1;
@@ -70,8 +71,7 @@ namespace GuardCount
                 this.Dispose();
             }
             this.tcpDevice = new Collects.TcpDeviceCollect(StConfig.IPAddress, StConfig.Port);
-            this.tcpDevice.AllVariable = this.Run.AllVariable;
-            this.tcpDevice.WriteVar = this.WriteVar;
+            this.tcpDevice.Run = this.Run;
             this.tcpDevice.ValueChangedEvent += this.TcpDevice_ValueChangedEvent;
             this.tcpDevice.Start();
         }

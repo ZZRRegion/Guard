@@ -5,19 +5,21 @@ using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
+using System.IO;
 
 namespace GuardCount
 {
     public partial class ReadSwitch : UserControl
     {
-        private Dictionary<int, bool> WriteVar;
+        private RunCollect Run;
         public Variable CurrentVariable { get; private set; }
-        public ReadSwitch(Variable variable, Dictionary<int, bool> writeVar)
+        public ReadSwitch(Variable variable, RunCollect run)
         {
             InitializeComponent();
+            this.btnSwitch.BackgroundImageLayout = ImageLayout.Stretch;
             this.CurrentVariable = variable;
             this.lblMemo.Text = variable.Text;
-            this.WriteVar = writeVar;
+            this.Run = run;
         }
 
         private void ReadSwitch_Load(object sender, EventArgs e)
@@ -26,20 +28,36 @@ namespace GuardCount
         }
         public void SetValue(bool value)
         {
-            this.btnSwitch.BackColor = this.CurrentVariable.BoolValue ? Color.Green : Color.Gray;
+            Action action = () => {
+                if (value)
+                {
+                    this.btnSwitch.BackgroundImage = new Bitmap(@"Images\on.png");
+                }
+                else
+                {
+                    this.btnSwitch.BackgroundImage = new Bitmap(@"Images\off.png");
+                }
+                this.txtCount.Text = this.CurrentVariable.ChangedCount.ToString();
+            };
+            this.Invoke(action);
         }
         private void btnSwitch_Click(object sender, EventArgs e)
         {
-            this.CurrentVariable.BoolValue = !this.CurrentVariable.BoolValue;
-            this.SetValue(this.CurrentVariable.BoolValue);
-            if (this.WriteVar.ContainsKey(this.CurrentVariable.Id))
+            this.btnSwitch.Enabled = false;
+            lock (this.Run.LockObj)
             {
-                this.WriteVar[this.CurrentVariable.Id] = this.CurrentVariable.BoolValue;
+                this.CurrentVariable.BoolValue = !this.CurrentVariable.BoolValue;
+                this.SetValue(this.CurrentVariable.BoolValue);
+                if (this.Run.WriteBOOLValue.ContainsKey(this.CurrentVariable.Id))
+                {
+                    this.Run.WriteBOOLValue[this.CurrentVariable.Id] = this.CurrentVariable.BoolValue;
+                }
+                else
+                {
+                    this.Run.WriteBOOLValue.Add(this.CurrentVariable.Id, this.CurrentVariable.BoolValue);
+                }
             }
-            else
-            {
-                this.WriteVar.Add(this.CurrentVariable.Id, this.CurrentVariable.BoolValue);
-            }
+            this.btnSwitch.Enabled = true;
         }
     }
 }

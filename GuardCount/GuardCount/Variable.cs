@@ -21,7 +21,11 @@ namespace GuardCount
         /// <summary>
         /// 变化次数
         /// </summary>
-        public int ChangedCount { get; set; }
+        public int ChangedCount { get; private set; }
+        public void AddChangedCount()
+        {
+            this.ChangedCount++;
+        }
         public Variable(XElement item)
         {
             this.Address = item.GetAttrAddress();

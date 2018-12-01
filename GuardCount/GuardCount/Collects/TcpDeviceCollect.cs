@@ -19,36 +19,44 @@ namespace GuardCount.Collects
         }
         public void Start()
         {
-            this.thread = new Thread(this.Run);
+            this.thread = new Thread(this.RunNow);
             this.thread.IsBackground = true;
             this.thread.Start();
         }
-        private void Run()
+        private void RunNow()
         {
             this.AutoResetEvent.Reset();
             while (!this.IsExit)
             {
                 try
                 {
-                    lock (this.locakobj)
+                    lock (this.Run.LockObj)
                     {
-                        foreach (KeyValuePair<int, bool> item in this.WriteVar)
+                        foreach (KeyValuePair<int, bool> item in this.Run.WriteBOOLValue)
                         {
-                            Variable variable = this.AllVariable[item.Key];
+                            Variable variable = this.Run.AllVariable[item.Key];
                             switch (variable.AddressType)
                             {
                                 case 0:
                                     this.Device.WriteSingleCoil(variable.SlaveAddress, variable.Address, item.Value);
                                     break;
-                                case 2:
-                                    break;
-
                             }
                         }
-                        this.WriteVar.Clear();
+                        this.Run.WriteBOOLValue.Clear();
+                        foreach (KeyValuePair<int, ushort> item in this.Run.WriteUshorValue)
+                        {
+                            Variable variable = this.Run.AllVariable[item.Key];
+                            switch (variable.AddressType)
+                            {
+                                case 2:
+                                    this.Device.WriteSingleRegister(variable.SlaveAddress, variable.Address, item.Value);
+                                    break;
+                            }
+                        }
                     }
                     bool[] bs = null;
-                    foreach (KeyValuePair<int, Variable> item in this.AllVariable)
+                    ushort[] us = null;
+                    foreach (KeyValuePair<int, Variable> item in this.Run.AllVariable)
                     {
                         switch (item.Value.AddressType)
                         {
@@ -57,7 +65,7 @@ namespace GuardCount.Collects
                                 if (item.Value.BoolValue != bs[0])
                                 {
                                     item.Value.BoolValue = bs[0];
-                                    item.Value.ChangedCount++;
+                                    item.Value.AddChangedCount();
                                     this.OnValueChanged(item.Value);
                                 }
                                 break;
@@ -66,7 +74,25 @@ namespace GuardCount.Collects
                                 if (item.Value.BoolValue != bs[0])
                                 {
                                     item.Value.BoolValue = bs[0];
-                                    item.Value.ChangedCount++;
+                                    item.Value.AddChangedCount();
+                                    this.OnValueChanged(item.Value);
+                                }
+                                break;
+                            case 2:
+                                us = this.Device.ReadHoldingRegisters(item.Value.SlaveAddress, item.Value.Address, 1);
+                                if (item.Value.UshortValue != us[0])
+                                {
+                                    item.Value.UshortValue = us[0];
+                                    item.Value.AddChangedCount();
+                                    this.OnValueChanged(item.Value);
+                                }
+                                break;
+                            case 3:
+                                us = this.Device.ReadInputRegisters(item.Value.SlaveAddress, item.Value.Address, 1);
+                                if (item.Value.UshortValue != us[0])
+                                {
+                                    item.Value.UshortValue = us[0];
+                                    item.Value.AddChangedCount();
                                     this.OnValueChanged(item.Value);
                                 }
                                 break;
