@@ -5,6 +5,7 @@ using System.Text;
 using System.Xml.Linq;
 using System.Xml;
 using System.IO;
+using System.Xml.XPath;
 
 namespace GuardCount
 {
@@ -18,10 +19,15 @@ namespace GuardCount
         public ushort UshortValue { get; set; }
         public ushort Address { get; set; }
         public byte AddressType { get; set; }
+        public bool Alarm { get; set; }
         /// <summary>
         /// 变化次数
         /// </summary>
         public int ChangedCount { get; private set; }
+        public override string ToString()
+        {
+            return this.Text;
+        }
         public void AddChangedCount()
         {
             this.ChangedCount++;
@@ -41,11 +47,12 @@ namespace GuardCount
             }
             Dictionary<int, Variable> dict = new Dictionary<int, Variable>();
             XDocument doc = XDocument.Load(fileName);
-            foreach(XElement xitems in doc.Root.Nodes())
+            foreach(XElement xitems in doc.Root.XPathSelectElements("//items"))
             {
                 foreach(XElement xitem in xitems.Nodes())
                 {
                     Variable variable = new Variable(xitem);
+                    variable.Alarm = xitems.GetAttr<bool>(nameof(Alarm));
                     variable.DataType = xitems.GetAttr<string>(nameof(variable.DataType));
                     variable.SlaveAddress = xitems.GetAttr<byte>(nameof(variable.SlaveAddress), 1);
                     variable.AddressType = xitems.GetAttr<byte>(nameof(variable.AddressType));

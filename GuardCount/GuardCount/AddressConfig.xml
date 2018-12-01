@@ -1,8 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <root Type="TCP">
-  <items AddressType="0" SlaveAddress="1" DataType="BOOL" Name="Y" Address="1536~2559" Text="Y0~Y1023">
+  <items Alarm="true"  AddressType="0" SlaveAddress="1" DataType="BOOL" Name="Y" Address="1536~2559" Text="Y0~Y1023">
     <item   address="1536" text="Y0"/>
     <item   address="1537" text="Y1"/>
+    <item   address="1538" text="Y2"/>
+    <item   address="1539" text="Y3"/>
+    <item   address="1540" text="Y4"/>
   </items>
   <items AddressType="1" SlaveAddress="1" DataType="BOOL" Name="X" Address="0~1023" Text="X0~X1023">
     <item   address="0" text="X0"/>
@@ -16,6 +19,4 @@
     <item   address="8" text="X8"/>
     <item   address="9" text="X9"/>
   </items>
-  
-  
 </root>

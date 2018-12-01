@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root>
+  <item text="优等0" value="0"/>
+  <item text="优等1" value="0"/>
+  <item text="优等2" value="0"/>
+  <item text="优等3" value="0"/>
+  <item text="优等4" value="0"/>
+  <item text="优等5" value="0"/>
+  <item text="一级" value="0"/>
+  <item text="合格" value="0"/>
+  <item text="次品" value="0"/>
+  <item text="无" value="0"/>
+</root>

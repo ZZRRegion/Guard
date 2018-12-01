@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Threading.Tasks;
 
 namespace GuardCount
 {
@@ -34,20 +35,32 @@ namespace GuardCount
 
         private void LoadSwitch()
         {
-            int top = 10;
+            int top = 100;
             int left = 10;
             foreach(KeyValuePair<int, Variable> item in this.Run.AllVariable)
             {
-                ReadSwitch readSwitch = new ReadSwitch(item.Value, this.Run);
-                this.pnl.Controls.Add(readSwitch);
-                readSwitch.Location = new Point(left, top);
-                left += readSwitch.Width + 1;
-                this.AllSwitch.Add(item.Key, readSwitch);
+                if (item.Value.AddressType == 1)
+                {
+                    ReadSwitch readSwitch = new ReadSwitch(item.Value, this.Run);
+                    this.pnl.Controls.Add(readSwitch);
+                    readSwitch.Location = new Point(left, top);
+                    left += readSwitch.Width + 1;
+                    this.AllSwitch.Add(item.Key, readSwitch);
+                }
+            }
+            foreach(KeyValuePair<int, Variable> item in this.Run.AllVariable)
+            {
+                if (item.Value.Alarm)
+                {
+                    this.cboAlarm.Items.Add(item.Value);
+                }
+                if (this.cboAlarm.Items.Count > 0)
+                    this.cboAlarm.SelectedIndex = 0;
             }
         }
         private void FrmMain_Load(object sender, EventArgs e)
         {
-            this.timer1.Start();   
+            this.txtCountSetting.Text = StConfig.CountSetting.ToString();
         }
 
         private void btnPort_Click(object sender, EventArgs e)
@@ -55,7 +68,7 @@ namespace GuardCount
             FrmTCPConfig frmTCPConfig = new FrmTCPConfig();
             if(frmTCPConfig.ShowDialog(this) == DialogResult.OK)
             {
-
+                this.btnStart.Focus();
             }
         }
 
@@ -65,20 +78,81 @@ namespace GuardCount
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            if(this.tcpDevice != null)
-            {
-                this.tcpDevice.ValueChangedEvent -= this.TcpDevice_ValueChangedEvent;
-                this.Dispose();
-            }
+            this.lblErrorContent.ResetText();
+            this.btnStart.Enabled = false;
             this.tcpDevice = new Collects.TcpDeviceCollect(StConfig.IPAddress, StConfig.Port);
             this.tcpDevice.Run = this.Run;
             this.tcpDevice.ValueChangedEvent += this.TcpDevice_ValueChangedEvent;
+            this.tcpDevice.ExceptionMessageEvent += TcpDevice_ExceptionMessageEvent;
             this.tcpDevice.Start();
+            if (this.tcpDevice.Connected)
+            {
+                this.btnStop.Enabled = true;
+            }
+            else
+            {
+                this.btnStart.Enabled = true;
+                this.btnPort.Focus();
+            }
+        }
+
+        private void TcpDevice_ExceptionMessageEvent(Exception ex)
+        {
+            try
+            {
+                Action action = () =>
+                {
+                    this.lblErrorContent.Text = ex.Message;
+                };
+                this.Invoke(action);
+            }
+            finally
+            {
+
+            }
         }
 
         private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            this.tcpDevice?.Dispose();
+            if(this.tcpDevice != null)
+            {
+                this.tcpDevice.ValueChangedEvent -= this.TcpDevice_ValueChangedEvent;
+                this.tcpDevice.ExceptionMessageEvent -= this.TcpDevice_ExceptionMessageEvent;
+                this.tcpDevice.Dispose();
+            }
+        }
+
+        private void btnCountSetting_Click(object sender, EventArgs e)
+        {
+            FrmInputText frmInputText = new FrmInputText();
+            frmInputText.Value = this.txtCountSetting.Text;
+            if(frmInputText.ShowDialog(this) == DialogResult.OK)
+            {
+
+                int value = 0;
+                if(int.TryParse(frmInputText.Value, out value) && value > 0)
+                {
+                    this.txtCountSetting.Text = value.ToString();
+                    StConfig.CountSetting = value;
+                }
+            }
+        }
+
+        private void btnStop_Click(object sender, EventArgs e)
+        {
+            if(this.tcpDevice != null)
+            {
+                this.tcpDevice.ValueChangedEvent -= this.TcpDevice_ValueChangedEvent;
+                this.tcpDevice.ExceptionMessageEvent -= this.TcpDevice_ExceptionMessageEvent;
+                this.tcpDevice.Dispose();
+            }
+            this.btnStart.Enabled = true;
+            this.btnStop.Enabled = false;
+        }
+
+        private void FrmMain_Activated(object sender, EventArgs e)
+        {
+            this.btnStart.Focus();
         }
     }
 }

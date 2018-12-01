@@ -63,5 +63,16 @@ namespace GuardCount
                 Write(nameof(Port), value.ToString());
             }
         }
+        public static int CountSetting
+        {
+            get
+            {
+                return Read<int>(nameof(CountSetting), 5);
+            }
+            set
+            {
+                Write(nameof(CountSetting), value.ToString());
+            }
+        }
     }
 }

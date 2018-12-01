@@ -12,6 +12,12 @@ namespace GuardCount.Collects
         public RunCollect Run { get; set; }
         public delegate void ValueChangedEventHandle(Variable variable);
         public event ValueChangedEventHandle ValueChangedEvent;
+        public delegate void ExceptionMessageEventHandle(Exception ex);
+        public event ExceptionMessageEventHandle ExceptionMessageEvent;
+        public void OnExceptionMessage(Exception ex)
+        {
+            this.ExceptionMessageEvent?.Invoke(ex);
+        }
         public void OnValueChanged(Variable variable)
         {
             this.ValueChangedEvent?.Invoke(variable);
@@ -23,7 +29,7 @@ namespace GuardCount.Collects
         public void Dispose()
         {
             this.IsExit = true;
-            this.AutoResetEvent.WaitOne();
+            this.AutoResetEvent.WaitOne(1000);
             this.Device?.Dispose();
         }
     }

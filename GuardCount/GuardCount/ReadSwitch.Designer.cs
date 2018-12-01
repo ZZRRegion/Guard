@@ -33,9 +33,9 @@
             this.lblMemo = new System.Windows.Forms.Label();
             this.pnlCenter = new System.Windows.Forms.Panel();
             this.pnlBot = new System.Windows.Forms.Panel();
-            this.cboSelect = new System.Windows.Forms.ComboBox();
-            this.lblCount = new System.Windows.Forms.Label();
             this.txtCount = new System.Windows.Forms.TextBox();
+            this.lblCount = new System.Windows.Forms.Label();
+            this.cboSelect = new System.Windows.Forms.ComboBox();
             this.pnlTop.SuspendLayout();
             this.pnlCenter.SuspendLayout();
             this.pnlBot.SuspendLayout();
@@ -89,6 +89,23 @@
             this.pnlBot.Size = new System.Drawing.Size(102, 54);
             this.pnlBot.TabIndex = 3;
             // 
+            // txtCount
+            // 
+            this.txtCount.Location = new System.Drawing.Point(43, 31);
+            this.txtCount.Name = "txtCount";
+            this.txtCount.ReadOnly = true;
+            this.txtCount.Size = new System.Drawing.Size(56, 21);
+            this.txtCount.TabIndex = 2;
+            // 
+            // lblCount
+            // 
+            this.lblCount.AutoSize = true;
+            this.lblCount.Location = new System.Drawing.Point(2, 35);
+            this.lblCount.Name = "lblCount";
+            this.lblCount.Size = new System.Drawing.Size(41, 12);
+            this.lblCount.TabIndex = 1;
+            this.lblCount.Text = "次数：";
+            // 
             // cboSelect
             // 
             this.cboSelect.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -99,22 +116,6 @@
             this.cboSelect.Name = "cboSelect";
             this.cboSelect.Size = new System.Drawing.Size(102, 28);
             this.cboSelect.TabIndex = 0;
-            // 
-            // lblCount
-            // 
-            this.lblCount.AutoSize = true;
-            this.lblCount.Location = new System.Drawing.Point(5, 35);
-            this.lblCount.Name = "lblCount";
-            this.lblCount.Size = new System.Drawing.Size(41, 12);
-            this.lblCount.TabIndex = 1;
-            this.lblCount.Text = "次数：";
-            // 
-            // txtCount
-            // 
-            this.txtCount.Location = new System.Drawing.Point(51, 31);
-            this.txtCount.Name = "txtCount";
-            this.txtCount.Size = new System.Drawing.Size(47, 21);
-            this.txtCount.TabIndex = 2;
             // 
             // ReadSwitch
             // 

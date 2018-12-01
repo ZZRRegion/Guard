@@ -17,14 +17,6 @@ namespace GuardCount.Collects
             serialPort.ReadTimeout = 300;
             serialPort.WriteTimeout = 300;
             this.Device = ModbusSerialMaster.CreateRtu(new SerialPortAdapter(serialPort));
-            try
-            {
-                 Task task = this.Device.WriteSingleCoilAsync(1, 1536, false);
-            }
-            catch(Exception ex)
-            {
-
-            }
             //serialPort.Close();
             //this.Device.Dispose();
         }

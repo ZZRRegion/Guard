@@ -16,12 +16,21 @@ namespace GuardCount
         public ReadSwitch(Variable variable, RunCollect run)
         {
             InitializeComponent();
+            this.LoadEvaluates();
             this.btnSwitch.BackgroundImageLayout = ImageLayout.Stretch;
             this.CurrentVariable = variable;
             this.lblMemo.Text = variable.Text;
             this.Run = run;
         }
-
+        private void LoadEvaluates()
+        {
+            List<EvaluateModel> lst = EvaluateModel.GetEvaluates();
+            lst.ForEach(item => {
+                this.cboSelect.Items.Add(item);
+            });
+            if (this.cboSelect.Items.Count > 0)
+                this.cboSelect.SelectedIndex = 0;
+        }
         private void ReadSwitch_Load(object sender, EventArgs e)
         {
             this.SetValue(this.CurrentVariable.BoolValue);
@@ -44,17 +53,20 @@ namespace GuardCount
         private void btnSwitch_Click(object sender, EventArgs e)
         {
             this.btnSwitch.Enabled = false;
-            lock (this.Run.LockObj)
+            if (this.CurrentVariable.AddressType == 0)
             {
-                this.CurrentVariable.BoolValue = !this.CurrentVariable.BoolValue;
-                this.SetValue(this.CurrentVariable.BoolValue);
-                if (this.Run.WriteBOOLValue.ContainsKey(this.CurrentVariable.Id))
+                lock (this.Run.LockObj)
                 {
-                    this.Run.WriteBOOLValue[this.CurrentVariable.Id] = this.CurrentVariable.BoolValue;
-                }
-                else
-                {
-                    this.Run.WriteBOOLValue.Add(this.CurrentVariable.Id, this.CurrentVariable.BoolValue);
+                    this.CurrentVariable.BoolValue = !this.CurrentVariable.BoolValue;
+                    this.SetValue(this.CurrentVariable.BoolValue);
+                    if (this.Run.WriteBOOLValue.ContainsKey(this.CurrentVariable.Id))
+                    {
+                        this.Run.WriteBOOLValue[this.CurrentVariable.Id] = this.CurrentVariable.BoolValue;
+                    }
+                    else
+                    {
+                        this.Run.WriteBOOLValue.Add(this.CurrentVariable.Id, this.CurrentVariable.BoolValue);
+                    }
                 }
             }
             this.btnSwitch.Enabled = true;

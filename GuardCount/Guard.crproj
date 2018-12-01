@@ -1,0 +1,6 @@
+<project outputDir="D:\Git\Guard\GuardCount\Confuser" baseDir="D:\Git\Guard\GuardCount\Bin" xmlns="http://confuser.codeplex.com">
+  <packer id="compressor" />
+  <module path="GuardCount.exe">
+    <rule pattern="true" inherit="false" />
+  </module>
+</project>
