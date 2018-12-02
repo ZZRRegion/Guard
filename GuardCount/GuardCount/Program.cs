@@ -15,6 +15,11 @@ namespace GuardCount
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.ThreadException += Application_ThreadException;
+            if (!string.IsNullOrEmpty(StConfig.SecretKey))
+            {
+                string regCode = HwEncryp.Decode(StConfig.SecretKey);
+                DevCommon.IsRegister = MachineGuid.ValidRegCode(regCode);
+            }
             Application.Run(new FrmMain());
         }
 

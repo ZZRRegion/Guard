@@ -17,9 +17,11 @@ namespace GuardCount
         public byte SlaveAddress { get; set; }
         public bool BoolValue { get; set; }
         public ushort UshortValue { get; set; }
+        public int IntValue { get; set; }
         public ushort Address { get; set; }
         public byte AddressType { get; set; }
-        public bool Alarm { get; set; }
+        public ushort AddressLength { get; set; }
+        public string Function { get; set; }
         /// <summary>
         /// 变化次数
         /// </summary>
@@ -28,9 +30,20 @@ namespace GuardCount
         {
             return this.Text;
         }
+        public void ResetChangedCount()
+        {
+            this.ChangedCount = 0;
+        }
         public void AddChangedCount()
         {
             this.ChangedCount++;
+        }
+        public void ResetValue()
+        {
+            this.BoolValue = false;
+            this.UshortValue = 0;
+            this.IntValue = 0;
+            this.ChangedCount = 0;
         }
         public Variable(XElement item)
         {
@@ -52,7 +65,8 @@ namespace GuardCount
                 foreach(XElement xitem in xitems.Nodes())
                 {
                     Variable variable = new Variable(xitem);
-                    variable.Alarm = xitems.GetAttr<bool>(nameof(Alarm));
+                    variable.AddressLength = xitems.GetAttr<ushort>(nameof(AddressLength), 1);
+                    variable.Function = xitems.GetAttr<string>(nameof(Function));
                     variable.DataType = xitems.GetAttr<string>(nameof(variable.DataType));
                     variable.SlaveAddress = xitems.GetAttr<byte>(nameof(variable.SlaveAddress), 1);
                     variable.AddressType = xitems.GetAttr<byte>(nameof(variable.AddressType));

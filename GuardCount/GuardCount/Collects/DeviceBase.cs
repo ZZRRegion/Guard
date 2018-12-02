@@ -20,7 +20,12 @@ namespace GuardCount.Collects
         }
         public void OnValueChanged(Variable variable)
         {
-            this.ValueChangedEvent?.Invoke(variable);
+            //Thread thread = new Thread(() => {
+                this.ValueChangedEvent?.Invoke(variable);
+            //});
+            //thread.IsBackground = true;
+            //thread.Start();
+            DevCommon.WriteLine("变量变更了！" + variable.Text + variable.BoolValue);
         }
         public bool IsExit { get; set; }
         public Thread thread;

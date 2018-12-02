@@ -9,18 +9,15 @@ using System.IO;
 
 namespace GuardCount
 {
-    public partial class ReadSwitch : UserControl
+    public partial class ReadSwitch : StUserControl
     {
-        private RunCollect Run;
-        public Variable CurrentVariable { get; private set; }
         public ReadSwitch(Variable variable, RunCollect run)
+            :base(variable, run)
         {
             InitializeComponent();
             this.LoadEvaluates();
             this.btnSwitch.BackgroundImageLayout = ImageLayout.Stretch;
-            this.CurrentVariable = variable;
             this.lblMemo.Text = variable.Text;
-            this.Run = run;
         }
         private void LoadEvaluates()
         {
@@ -35,7 +32,7 @@ namespace GuardCount
         {
             this.SetValue(this.CurrentVariable.BoolValue);
         }
-        public void SetValue(bool value)
+        public override void SetValue(bool value)
         {
             Action action = () => {
                 if (value)
@@ -70,6 +67,10 @@ namespace GuardCount
                 }
             }
             this.btnSwitch.Enabled = true;
+        }
+        public override void ResetValue()
+        {
+            this.SetValue(false);
         }
     }
 }

@@ -42,5 +42,19 @@ namespace GuardCount
         {
             Thread.Sleep(millisecondsTimeout);
         }
+        public static int UShortToInt(ushort high, ushort low)
+        {
+            short high_x = (short)high;
+            short low_x = (short)low;
+            return (int)(high_x * 65536 + (ushort)low_x);
+        }
+        public static void WriteLine(string msg)
+        {
+            Console.WriteLine(msg);
+        }
+        /// <summary>
+        /// 是否已经有注册了
+        /// </summary>
+        public static bool IsRegister { get; set; }
     }
 }

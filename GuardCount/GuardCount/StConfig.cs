@@ -74,5 +74,19 @@ namespace GuardCount
                 Write(nameof(CountSetting), value.ToString());
             }
         }
+        /// <summary>
+        /// 密钥
+        /// </summary>
+        public static string SecretKey
+        {
+            get
+            {
+                return Read<string>(nameof(SecretKey));
+            }
+            set
+            {
+                Write(nameof(SecretKey), value);
+            }
+        }
     }
 }

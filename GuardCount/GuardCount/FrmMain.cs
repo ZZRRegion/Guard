@@ -13,7 +13,7 @@ namespace GuardCount
     public partial class FrmMain : Form
     {
         private Collects.TcpDeviceCollect tcpDevice;
-        private Dictionary<int, ReadSwitch> AllSwitch { get; set; } = new Dictionary<int, ReadSwitch>();
+        private Dictionary<int, StUserControl> AllSwitch { get; set; } = new Dictionary<int, StUserControl>();
         private RunCollect Run { get; set; } = new RunCollect();
         //private Collects.ComDeviceCollect deviceCollect = new Collects.ComDeviceCollect();
         public FrmMain()
@@ -22,14 +22,51 @@ namespace GuardCount
             this.Text += $" [V{DevCommon.Version},{DevCommon.VersionTime}]";
             this.Run.AllVariable = Variable.GetConfig();
             this.LoadSwitch();
+            this.LoadAlarmSelect();
+            this.Run.AlarmOutput = this.cboAlarm.SelectedItem as Variable;
             this.pnl.AutoScroll = true;
         }
 
         private void TcpDevice_ValueChangedEvent(Variable variable)
         {
-            if (this.AllSwitch.ContainsKey(variable.Id))
+            switch (variable.AddressType)
             {
-                this.AllSwitch[variable.Id].SetValue(variable.BoolValue);
+                case 0:
+                case 1:
+                    this.AllSwitch[variable.Id].SetValue(variable.BoolValue);
+                    break;
+                case 2:
+                case 3:
+                    switch (variable.DataType)
+                    {
+                        case "INT":
+                            this.AllSwitch[variable.Id].SetValue(variable.IntValue);
+                            break;
+                        case "USHORT":
+                            if(variable.Function == "AlarmCount")
+                            {
+                                Action action = () => {
+                                    this.txtContinuityCount.Text = variable.UshortValue.ToString();
+                                    this.Run.AlarmCount = variable.UshortValue;
+                                };
+                                this.Invoke(action);
+                            }else if(variable.Function == "AlarmSelect")
+                            {
+                                Action action = () => {
+                                    if(variable.UshortValue >= 0 && variable.UshortValue < this.cboAlarm.Items.Count)
+                                    {
+                                        this.cboAlarm.SelectedIndex = variable.UshortValue;
+                                    }
+                                };
+                                this.Invoke(action);
+                            }
+                            else
+                            {
+                                this.AllSwitch[variable.Id].SetValue(variable.UshortValue);
+                            }
+                            break;
+                    }
+                    break;
             }
         }
 
@@ -37,9 +74,10 @@ namespace GuardCount
         {
             int top = 100;
             int left = 10;
+            int analogLeft = 10;
             foreach(KeyValuePair<int, Variable> item in this.Run.AllVariable)
             {
-                if (item.Value.AddressType == 1)
+                if (item.Value.Function == "Input")
                 {
                     ReadSwitch readSwitch = new ReadSwitch(item.Value, this.Run);
                     this.pnl.Controls.Add(readSwitch);
@@ -47,33 +85,67 @@ namespace GuardCount
                     left += readSwitch.Width + 1;
                     this.AllSwitch.Add(item.Key, readSwitch);
                 }
-            }
-            foreach(KeyValuePair<int, Variable> item in this.Run.AllVariable)
-            {
-                if (item.Value.Alarm)
+                else if(item.Value.Function == "Reset")
                 {
-                    this.cboAlarm.Items.Add(item.Value);
+                    ButtonSwitch buttonSwitch = new ButtonSwitch(item.Value, this.Run);
+                    buttonSwitch.Id = item.Value.Id;
+                    buttonSwitch.Location = new Point(2, 20);
+                    this.pnlSetZero.Controls.Add(buttonSwitch);
+                    this.AllSwitch.Add(item.Key, buttonSwitch);
+                }else if(item.Value.Function == "ProductionCount")
+                {
+                    AnalogDisplay analogDisplay = new AnalogDisplay(item.Value, this.Run);
+                    this.pnlProduction.Controls.Add(analogDisplay);
+                    analogDisplay.Location = new Point(analogLeft, 3);
+                    analogLeft += analogDisplay.Width + 1;
+                    this.AllSwitch.Add(item.Key, analogDisplay);
                 }
-                if (this.cboAlarm.Items.Count > 0)
-                    this.cboAlarm.SelectedIndex = 0;
+            }
+        }
+        private void LoadIsRegister(bool value)
+        {
+            foreach(Control ctl in this.Controls)
+            {
+                if(ctl != this.pnlBot)
+                {
+                    ctl.Enabled = value;
+                }
             }
         }
         private void FrmMain_Load(object sender, EventArgs e)
         {
-            this.txtCountSetting.Text = StConfig.CountSetting.ToString();
+            this.LoadIsRegister(DevCommon.IsRegister);
+            this.btnRegister.Visible = !DevCommon.IsRegister;
+            if (DevCommon.IsRegister)
+            {
+                this.lblRegisterState.Text = "软件已注册";
+            }
+            this.lblTime.Text = DateTime.Now.ToString();
+            this.timer1.Start();
         }
-
+        private void LoadAlarmSelect()
+        {
+            foreach(Variable variable in this.Run.AllVariable.Values)
+            {
+                if(variable.Function == "AlarmOutput")
+                {
+                    this.cboAlarm.Items.Add(variable);
+                }
+            }
+            if(this.cboAlarm.Items.Count > 0)
+            {
+                this.cboAlarm.SelectedIndex = 0;
+            }
+        }
         private void btnPort_Click(object sender, EventArgs e)
         {
             FrmTCPConfig frmTCPConfig = new FrmTCPConfig();
             if(frmTCPConfig.ShowDialog(this) == DialogResult.OK)
             {
                 this.btnStart.Focus();
+                this.btnStop_Click(this.btnStop, EventArgs.Empty);
+                this.btnStart_Click(this.btnStart, EventArgs.Empty);
             }
-        }
-
-        private void timer1_Tick(object sender, EventArgs e)
-        {
         }
 
         private void btnStart_Click(object sender, EventArgs e)
@@ -121,23 +193,23 @@ namespace GuardCount
                 this.tcpDevice.Dispose();
             }
         }
-
-        private void btnCountSetting_Click(object sender, EventArgs e)
+        private void ResetValue()
         {
-            FrmInputText frmInputText = new FrmInputText();
-            frmInputText.Value = this.txtCountSetting.Text;
-            if(frmInputText.ShowDialog(this) == DialogResult.OK)
+            lock (this.Run.LockObj)
             {
-
-                int value = 0;
-                if(int.TryParse(frmInputText.Value, out value) && value > 0)
+                this.Run.WriteBOOLValue.Clear();
+                this.Run.WriteUshorValue.Clear();
+                foreach(Variable variable in this.Run.AllVariable.Values)
                 {
-                    this.txtCountSetting.Text = value.ToString();
-                    StConfig.CountSetting = value;
+                    variable.ResetValue();
                 }
             }
+            foreach(StUserControl stUserControl in this.AllSwitch.Values)
+            {
+                stUserControl.ResetValue();
+            }
+            this.txtContinuityCount.Text = "0";
         }
-
         private void btnStop_Click(object sender, EventArgs e)
         {
             if(this.tcpDevice != null)
@@ -145,6 +217,7 @@ namespace GuardCount
                 this.tcpDevice.ValueChangedEvent -= this.TcpDevice_ValueChangedEvent;
                 this.tcpDevice.ExceptionMessageEvent -= this.TcpDevice_ExceptionMessageEvent;
                 this.tcpDevice.Dispose();
+                this.ResetValue();
             }
             this.btnStart.Enabled = true;
             this.btnStop.Enabled = false;
@@ -153,6 +226,63 @@ namespace GuardCount
         private void FrmMain_Activated(object sender, EventArgs e)
         {
             this.btnStart.Focus();
+        }
+
+        private void btnContinuitySetting_Click(object sender, EventArgs e)
+        {
+            FrmInputText frmInputText = new FrmInputText();
+            frmInputText.Value = this.txtContinuityCount.Text;
+            if(frmInputText.ShowDialog(this) == DialogResult.OK)
+            {
+                ushort value = 0;
+                if(ushort.TryParse(frmInputText.Value, out value))
+                {
+                    foreach (Variable variable in this.Run.AllVariable.Values)
+                    {
+                        if (variable.Function == "AlarmCount")
+                        {
+                            lock (this.Run.LockObj)
+                            {
+                                this.Run.WriteUshorValue.Add(variable.Id, value);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void cboAlarm_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(this.cboAlarm.SelectedIndex >= 0)
+            {
+                lock (this.Run.LockObj)
+                {
+                    foreach(Variable variable in this.Run.AllVariable.Values)
+                    {
+                        if(variable.Function == "AlarmSelect")
+                        {
+                            this.Run.WriteUshorValue[variable.Id] = (ushort)this.cboAlarm.SelectedIndex;
+                        }
+                    }
+                    this.Run.AlarmOutput = this.cboAlarm.SelectedItem as Variable;
+                }
+            }
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            this.lblTime.Text = DateTime.Now.ToString();
+        }
+
+        private void btnRegister_Click(object sender, EventArgs e)
+        {
+            FrmRegister frmRegister = new FrmRegister();
+            if(frmRegister.ShowDialog(this) == DialogResult.OK)
+            {
+                this.btnRegister.Visible = false;
+                this.lblRegisterState.Text = "软件已注册";
+                this.LoadIsRegister(DevCommon.IsRegister);
+            }
         }
     }
 }

@@ -46,7 +46,7 @@
             this.btnSwitch.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnSwitch.Location = new System.Drawing.Point(0, 0);
             this.btnSwitch.Name = "btnSwitch";
-            this.btnSwitch.Size = new System.Drawing.Size(102, 42);
+            this.btnSwitch.Size = new System.Drawing.Size(78, 42);
             this.btnSwitch.TabIndex = 0;
             this.btnSwitch.UseVisualStyleBackColor = true;
             this.btnSwitch.Click += new System.EventHandler(this.btnSwitch_Click);
@@ -57,7 +57,7 @@
             this.pnlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlTop.Location = new System.Drawing.Point(0, 0);
             this.pnlTop.Name = "pnlTop";
-            this.pnlTop.Size = new System.Drawing.Size(102, 30);
+            this.pnlTop.Size = new System.Drawing.Size(78, 30);
             this.pnlTop.TabIndex = 1;
             // 
             // lblMemo
@@ -75,7 +75,7 @@
             this.pnlCenter.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlCenter.Location = new System.Drawing.Point(0, 30);
             this.pnlCenter.Name = "pnlCenter";
-            this.pnlCenter.Size = new System.Drawing.Size(102, 42);
+            this.pnlCenter.Size = new System.Drawing.Size(78, 42);
             this.pnlCenter.TabIndex = 2;
             // 
             // pnlBot
@@ -86,15 +86,15 @@
             this.pnlBot.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pnlBot.Location = new System.Drawing.Point(0, 72);
             this.pnlBot.Name = "pnlBot";
-            this.pnlBot.Size = new System.Drawing.Size(102, 54);
+            this.pnlBot.Size = new System.Drawing.Size(78, 54);
             this.pnlBot.TabIndex = 3;
             // 
             // txtCount
             // 
-            this.txtCount.Location = new System.Drawing.Point(43, 31);
+            this.txtCount.Location = new System.Drawing.Point(36, 31);
             this.txtCount.Name = "txtCount";
             this.txtCount.ReadOnly = true;
-            this.txtCount.Size = new System.Drawing.Size(56, 21);
+            this.txtCount.Size = new System.Drawing.Size(42, 21);
             this.txtCount.TabIndex = 2;
             // 
             // lblCount
@@ -114,7 +114,7 @@
             this.cboSelect.FormattingEnabled = true;
             this.cboSelect.Location = new System.Drawing.Point(0, 0);
             this.cboSelect.Name = "cboSelect";
-            this.cboSelect.Size = new System.Drawing.Size(102, 28);
+            this.cboSelect.Size = new System.Drawing.Size(78, 28);
             this.cboSelect.TabIndex = 0;
             // 
             // ReadSwitch
@@ -125,7 +125,7 @@
             this.Controls.Add(this.pnlBot);
             this.Controls.Add(this.pnlTop);
             this.Name = "ReadSwitch";
-            this.Size = new System.Drawing.Size(102, 126);
+            this.Size = new System.Drawing.Size(78, 126);
             this.Load += new System.EventHandler(this.ReadSwitch_Load);
             this.pnlTop.ResumeLayout(false);
             this.pnlTop.PerformLayout();

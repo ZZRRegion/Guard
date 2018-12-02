@@ -46,27 +46,48 @@ namespace GuardCount.Collects
             {
                 try
                 {
+                    bool isOk = true;
                     lock (this.Run.LockObj)
                     {
                         foreach (KeyValuePair<int, bool> item in this.Run.WriteBOOLValue)
                         {
                             variable = this.Run.AllVariable[item.Key];
-                            switch (variable.AddressType)
+                            try
                             {
-                                case 0:
-                                    this.Device.WriteSingleCoil(variable.SlaveAddress, variable.Address, item.Value);
-                                    break;
+                                switch (variable.AddressType)
+                                {
+                                    case 0:
+                                        this.Device.WriteSingleCoil(variable.SlaveAddress, variable.Address, item.Value);
+                                        break;
+                                }
+                            }
+                            catch(Exception ex)
+                            {
+                                isOk = false;
+                                StLog.AddException(ex);
+                                this.OnExceptionMessage(new Exception($"{variable?.Text}写入出错"));
+                                this.Reconnect();
                             }
                         }
                         this.Run.WriteBOOLValue.Clear();
                         foreach (KeyValuePair<int, ushort> item in this.Run.WriteUshorValue)
                         {
                             variable = this.Run.AllVariable[item.Key];
-                            switch (variable.AddressType)
+                            try
                             {
-                                case 2:
-                                    this.Device.WriteSingleRegister(variable.SlaveAddress, variable.Address, item.Value);
-                                    break;
+                                switch (variable.AddressType)
+                                {
+                                    case 2:
+                                        this.Device.WriteSingleRegister(variable.SlaveAddress, variable.Address, item.Value);
+                                        break;
+                                }
+                            }
+                            catch(Exception ex)
+                            {
+                                isOk = false;
+                                StLog.AddException(ex);
+                                this.OnExceptionMessage(new Exception($"{variable?.Text}写入出错"));
+                                this.Reconnect();
                             }
                         }
                         this.Run.WriteUshorValue.Clear();
@@ -76,67 +97,116 @@ namespace GuardCount.Collects
                     foreach (KeyValuePair<int, Variable> item in this.Run.AllVariable)
                     {
                         variable = item.Value;
-                        switch (variable.AddressType)
+                        try
                         {
-                            case 0:
-                                bs = this.Device.ReadCoils(variable.SlaveAddress, variable.Address, 1);
-                                if (variable.BoolValue != bs[0])
-                                {
-                                    variable.BoolValue = bs[0];
-                                    variable.AddChangedCount();
-                                    this.OnValueChanged(variable);
-                                }
-                                break;
-                            case 1:
-                                bs = this.Device.ReadInputs(variable.SlaveAddress, variable.Address, 1);
-                                if (variable.BoolValue != bs[0])
-                                {
-                                    variable.BoolValue = bs[0];
-                                    variable.AddChangedCount();
-                                    this.OnValueChanged(variable);
-                                }
-                                break;
-                            case 2:
-                                us = this.Device.ReadHoldingRegisters(variable.SlaveAddress, variable.Address, 1);
-                                if (variable.UshortValue != us[0])
-                                {
-                                    variable.UshortValue = us[0];
-                                    variable.AddChangedCount();
-                                    this.OnValueChanged(variable);
-                                }
-                                break;
-                            case 3:
-                                us = this.Device.ReadInputRegisters(variable.SlaveAddress, variable.Address, 1);
-                                if (variable.UshortValue != us[0])
-                                {
-                                    variable.UshortValue = us[0];
-                                    variable.AddChangedCount();
-                                    this.OnValueChanged(variable);
-                                }
-                                break;
+                            switch (variable.AddressType)
+                            {
+                                case 0:
+                                    bs = this.Device.ReadCoils(variable.SlaveAddress, variable.Address, 1);
+                                    if (variable.BoolValue != bs[0])
+                                    {
+                                        variable.BoolValue = bs[0];
+                                        this.OnValueChanged(variable);
+                                    }
+                                    break;
+                                case 1:
+                                    bs = this.Device.ReadInputs(variable.SlaveAddress, variable.Address, 1);
+                                    if (variable.BoolValue != bs[0])
+                                    {
+                                        variable.BoolValue = bs[0];
+                                        if(bs[0])
+                                        variable.AddChangedCount();
+                                        if(variable.ChangedCount == this.Run.AlarmCount)
+                                        {
+                                            this.Device.WriteSingleCoil(this.Run.AlarmOutput.SlaveAddress, this.Run.AlarmOutput.Address, true);
+                                            variable.ResetChangedCount();
+                                        }
+                                        this.OnValueChanged(variable);
+                                    }
+                                    break;
+                                case 2:
+                                    us = this.Device.ReadHoldingRegisters(variable.SlaveAddress, variable.Address, variable.AddressLength);
+                                    switch (variable.DataType)
+                                    {
+                                        case "USHORT":
+                                            if (variable.UshortValue != us[0])
+                                            {
+                                                variable.UshortValue = us[0];
+                                                this.OnValueChanged(variable);
+                                            }
+                                            break;
+                                        case "INT":
+                                            int value = DevCommon.UShortToInt(us[1], us[0]);
+                                            if(variable.IntValue != value)
+                                            {
+                                                variable.IntValue = value;
+                                                this.OnValueChanged(variable);
+                                            }
+                                            break;
+                                    }
+                                    break;
+                                case 3:
+                                    us = this.Device.ReadInputRegisters(variable.SlaveAddress, variable.Address, 1);
+                                    switch (variable.DataType)
+                                    {
+                                        case "USHORT":
+                                            if (variable.UshortValue != us[0])
+                                            {
+                                                variable.UshortValue = us[0];
+                                                this.OnValueChanged(variable);
+                                            }
+                                            break;
+                                        case "INT":
+                                            int value = DevCommon.UShortToInt(us[1], us[0]);
+                                            if (variable.IntValue != value)
+                                            {
+                                                variable.IntValue = value;
+                                                this.OnValueChanged(variable);
+                                            }
+                                            break;
+                                    }
+                                    break;
+                            }
+                        }
+                        catch(Exception ex)
+                        {
+                            isOk = false;
+                            StLog.AddException(ex);
+                            this.OnExceptionMessage(new Exception($"{variable?.Text}读取出错"));
+                            this.Reconnect();
                         }
                     }
-                    this.OnExceptionMessage(new Exception("状态良好！"));
+                    if (isOk)
+                    {
+                        this.OnExceptionMessage(new Exception("状态良好！"));
+                    }
                 }
                 catch(Exception ex)
                 {
                     StLog.AddException(ex);
-                    this.OnExceptionMessage(new Exception($"{variable?.Text}访问出错"));
-                    if (!this.tcpClient.Connected)
-                    {
-                        try
-                        {
-                            this.tcpClient.Connect(IPAddress.Parse(this.IpAddress), this.Port);
-                        }
-                        finally
-                        {
-
-                        }
-                    }
+                    this.OnExceptionMessage(new Exception($"{variable?.Text}写入出错"));
+                    this.Reconnect();
                 }
-                DevCommon.Sleep(10);
+                DevCommon.Sleep(5);
             }
             this.AutoResetEvent.Set();
+        }
+        /// <summary>
+        /// 重连
+        /// </summary>
+        private void Reconnect()
+        {
+            if (!this.tcpClient.Connected)
+            {
+                try
+                {
+                    this.tcpClient.Connect(IPAddress.Parse(this.IpAddress), this.Port);
+                }
+                catch(Exception ex)
+                {
+
+                }
+            }
         }
     }
 }
