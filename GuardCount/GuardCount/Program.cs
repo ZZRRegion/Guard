@@ -21,6 +21,7 @@ namespace GuardCount
                 DevCommon.IsRegister = MachineGuid.ValidRegCode(regCode);
             }
             Application.Run(new FrmMain());
+            //Application.Run(new FrmSerialPortConfig());
         }
 
         private static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)

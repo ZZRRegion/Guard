@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<root Type="TCP">
+<root ip="192.168.1.111" netPort="502" PortName="COM1" BaudRate="19200" Parity="None" DataBits="8" StopBits="2" SlaveAddress="1" >
   <items Function="AlarmOutput" AddressType="0" SlaveAddress="1" DataType="BOOL" Name="Y" Address="1536~2559" Text="Y0~Y1023">
     <item   address="1536" text="Y0"/>
     <item   address="1537" text="Y1"/>

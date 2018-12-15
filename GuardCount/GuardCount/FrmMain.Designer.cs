@@ -35,33 +35,33 @@
             this.lblCompany = new System.Windows.Forms.Label();
             this.picHead = new System.Windows.Forms.PictureBox();
             this.btnPort = new System.Windows.Forms.Button();
-            this.btnStart = new System.Windows.Forms.Button();
             this.pnlCenter = new System.Windows.Forms.Panel();
+            this.btnStop = new System.Windows.Forms.Button();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.btnContinuitySetting = new System.Windows.Forms.Button();
+            this.txtContinuityCount = new System.Windows.Forms.TextBox();
+            this.lblContinuityCount = new System.Windows.Forms.Label();
+            this.pnlProduction = new System.Windows.Forms.Panel();
+            this.pnlSetZero = new System.Windows.Forms.Panel();
+            this.lblSetZero = new System.Windows.Forms.Label();
+            this.lblDisplay = new System.Windows.Forms.Label();
             this.cboAlarm = new System.Windows.Forms.ComboBox();
             this.lblAlarm = new System.Windows.Forms.Label();
             this.pnlBot = new System.Windows.Forms.Panel();
-            this.btnStop = new System.Windows.Forms.Button();
+            this.btnRegister = new System.Windows.Forms.Button();
+            this.lblRegisterState = new System.Windows.Forms.Label();
+            this.lblTime = new System.Windows.Forms.Label();
             this.lblErrorContent = new System.Windows.Forms.Label();
             this.lblError = new System.Windows.Forms.Label();
-            this.lblDisplay = new System.Windows.Forms.Label();
-            this.pnlSetZero = new System.Windows.Forms.Panel();
-            this.pnlProduction = new System.Windows.Forms.Panel();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.lblContinuityCount = new System.Windows.Forms.Label();
-            this.txtContinuityCount = new System.Windows.Forms.TextBox();
-            this.btnContinuitySetting = new System.Windows.Forms.Button();
-            this.lblSetZero = new System.Windows.Forms.Label();
-            this.lblTime = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.lblRegisterState = new System.Windows.Forms.Label();
-            this.btnRegister = new System.Windows.Forms.Button();
+            this.btnNet = new System.Windows.Forms.Button();
             this.pnl.SuspendLayout();
             this.pnlCompany.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picHead)).BeginInit();
             this.pnlCenter.SuspendLayout();
-            this.pnlBot.SuspendLayout();
-            this.pnlSetZero.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.pnlSetZero.SuspendLayout();
+            this.pnlBot.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnl
@@ -106,31 +106,21 @@
             // 
             // btnPort
             // 
-            this.btnPort.Location = new System.Drawing.Point(493, 166);
+            this.btnPort.Location = new System.Drawing.Point(467, 168);
             this.btnPort.Name = "btnPort";
             this.btnPort.Size = new System.Drawing.Size(76, 21);
             this.btnPort.TabIndex = 1;
-            this.btnPort.Text = "配置";
+            this.btnPort.Text = "串口配置";
             this.btnPort.UseVisualStyleBackColor = true;
             this.btnPort.Click += new System.EventHandler(this.btnPort_Click);
             // 
-            // btnStart
-            // 
-            this.btnStart.Location = new System.Drawing.Point(581, 166);
-            this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(76, 21);
-            this.btnStart.TabIndex = 2;
-            this.btnStart.Text = "启动";
-            this.btnStart.UseVisualStyleBackColor = true;
-            this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
-            // 
             // pnlCenter
             // 
+            this.pnlCenter.Controls.Add(this.btnNet);
             this.pnlCenter.Controls.Add(this.btnStop);
             this.pnlCenter.Controls.Add(this.panel1);
             this.pnlCenter.Controls.Add(this.pnlProduction);
             this.pnlCenter.Controls.Add(this.pnlSetZero);
-            this.pnlCenter.Controls.Add(this.btnStart);
             this.pnlCenter.Controls.Add(this.btnPort);
             this.pnlCenter.Controls.Add(this.lblDisplay);
             this.pnlCenter.Controls.Add(this.cboAlarm);
@@ -140,6 +130,87 @@
             this.pnlCenter.Name = "pnlCenter";
             this.pnlCenter.Size = new System.Drawing.Size(806, 222);
             this.pnlCenter.TabIndex = 1;
+            // 
+            // btnStop
+            // 
+            this.btnStop.Enabled = false;
+            this.btnStop.Location = new System.Drawing.Point(639, 167);
+            this.btnStop.Name = "btnStop";
+            this.btnStop.Size = new System.Drawing.Size(75, 23);
+            this.btnStop.TabIndex = 3;
+            this.btnStop.Text = "停止";
+            this.btnStop.UseVisualStyleBackColor = true;
+            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.btnContinuitySetting);
+            this.panel1.Controls.Add(this.txtContinuityCount);
+            this.panel1.Controls.Add(this.lblContinuityCount);
+            this.panel1.Location = new System.Drawing.Point(102, 139);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(187, 48);
+            this.panel1.TabIndex = 28;
+            // 
+            // btnContinuitySetting
+            // 
+            this.btnContinuitySetting.Location = new System.Drawing.Point(107, 21);
+            this.btnContinuitySetting.Name = "btnContinuitySetting";
+            this.btnContinuitySetting.Size = new System.Drawing.Size(75, 23);
+            this.btnContinuitySetting.TabIndex = 2;
+            this.btnContinuitySetting.Text = "设置";
+            this.btnContinuitySetting.UseVisualStyleBackColor = true;
+            this.btnContinuitySetting.Click += new System.EventHandler(this.btnContinuitySetting_Click);
+            // 
+            // txtContinuityCount
+            // 
+            this.txtContinuityCount.Location = new System.Drawing.Point(2, 22);
+            this.txtContinuityCount.Name = "txtContinuityCount";
+            this.txtContinuityCount.ReadOnly = true;
+            this.txtContinuityCount.Size = new System.Drawing.Size(100, 21);
+            this.txtContinuityCount.TabIndex = 1;
+            // 
+            // lblContinuityCount
+            // 
+            this.lblContinuityCount.AutoSize = true;
+            this.lblContinuityCount.Location = new System.Drawing.Point(2, 2);
+            this.lblContinuityCount.Name = "lblContinuityCount";
+            this.lblContinuityCount.Size = new System.Drawing.Size(89, 12);
+            this.lblContinuityCount.TabIndex = 0;
+            this.lblContinuityCount.Text = "连续报警数量：";
+            // 
+            // pnlProduction
+            // 
+            this.pnlProduction.Location = new System.Drawing.Point(3, 36);
+            this.pnlProduction.Name = "pnlProduction";
+            this.pnlProduction.Size = new System.Drawing.Size(800, 100);
+            this.pnlProduction.TabIndex = 27;
+            // 
+            // pnlSetZero
+            // 
+            this.pnlSetZero.Controls.Add(this.lblSetZero);
+            this.pnlSetZero.Location = new System.Drawing.Point(302, 139);
+            this.pnlSetZero.Name = "pnlSetZero";
+            this.pnlSetZero.Size = new System.Drawing.Size(156, 74);
+            this.pnlSetZero.TabIndex = 4;
+            // 
+            // lblSetZero
+            // 
+            this.lblSetZero.AutoSize = true;
+            this.lblSetZero.Location = new System.Drawing.Point(2, 5);
+            this.lblSetZero.Name = "lblSetZero";
+            this.lblSetZero.Size = new System.Drawing.Size(113, 12);
+            this.lblSetZero.TabIndex = 0;
+            this.lblSetZero.Text = "产量清零设置：点动";
+            // 
+            // lblDisplay
+            // 
+            this.lblDisplay.AutoSize = true;
+            this.lblDisplay.Location = new System.Drawing.Point(5, 13);
+            this.lblDisplay.Name = "lblDisplay";
+            this.lblDisplay.Size = new System.Drawing.Size(89, 12);
+            this.lblDisplay.TabIndex = 26;
+            this.lblDisplay.Text = "等级产量显示：";
             // 
             // cboAlarm
             // 
@@ -173,16 +244,33 @@
             this.pnlBot.Size = new System.Drawing.Size(806, 125);
             this.pnlBot.TabIndex = 2;
             // 
-            // btnStop
+            // btnRegister
             // 
-            this.btnStop.Enabled = false;
-            this.btnStop.Location = new System.Drawing.Point(669, 166);
-            this.btnStop.Name = "btnStop";
-            this.btnStop.Size = new System.Drawing.Size(75, 23);
-            this.btnStop.TabIndex = 3;
-            this.btnStop.Text = "停止";
-            this.btnStop.UseVisualStyleBackColor = true;
-            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
+            this.btnRegister.Location = new System.Drawing.Point(14, 59);
+            this.btnRegister.Name = "btnRegister";
+            this.btnRegister.Size = new System.Drawing.Size(75, 23);
+            this.btnRegister.TabIndex = 4;
+            this.btnRegister.Text = "注册";
+            this.btnRegister.UseVisualStyleBackColor = true;
+            this.btnRegister.Click += new System.EventHandler(this.btnRegister_Click);
+            // 
+            // lblRegisterState
+            // 
+            this.lblRegisterState.AutoSize = true;
+            this.lblRegisterState.Location = new System.Drawing.Point(14, 96);
+            this.lblRegisterState.Name = "lblRegisterState";
+            this.lblRegisterState.Size = new System.Drawing.Size(41, 12);
+            this.lblRegisterState.TabIndex = 3;
+            this.lblRegisterState.Text = "未注册";
+            // 
+            // lblTime
+            // 
+            this.lblTime.AutoSize = true;
+            this.lblTime.Location = new System.Drawing.Point(580, 93);
+            this.lblTime.Name = "lblTime";
+            this.lblTime.Size = new System.Drawing.Size(29, 12);
+            this.lblTime.TabIndex = 2;
+            this.lblTime.Text = "时间";
             // 
             // lblErrorContent
             // 
@@ -202,108 +290,20 @@
             this.lblError.TabIndex = 0;
             this.lblError.Text = "通信故障：";
             // 
-            // lblDisplay
-            // 
-            this.lblDisplay.AutoSize = true;
-            this.lblDisplay.Location = new System.Drawing.Point(5, 13);
-            this.lblDisplay.Name = "lblDisplay";
-            this.lblDisplay.Size = new System.Drawing.Size(89, 12);
-            this.lblDisplay.TabIndex = 26;
-            this.lblDisplay.Text = "等级产量显示：";
-            // 
-            // pnlSetZero
-            // 
-            this.pnlSetZero.Controls.Add(this.lblSetZero);
-            this.pnlSetZero.Location = new System.Drawing.Point(302, 139);
-            this.pnlSetZero.Name = "pnlSetZero";
-            this.pnlSetZero.Size = new System.Drawing.Size(156, 74);
-            this.pnlSetZero.TabIndex = 4;
-            // 
-            // pnlProduction
-            // 
-            this.pnlProduction.Location = new System.Drawing.Point(3, 36);
-            this.pnlProduction.Name = "pnlProduction";
-            this.pnlProduction.Size = new System.Drawing.Size(800, 100);
-            this.pnlProduction.TabIndex = 27;
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.btnContinuitySetting);
-            this.panel1.Controls.Add(this.txtContinuityCount);
-            this.panel1.Controls.Add(this.lblContinuityCount);
-            this.panel1.Location = new System.Drawing.Point(102, 139);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(187, 48);
-            this.panel1.TabIndex = 28;
-            // 
-            // lblContinuityCount
-            // 
-            this.lblContinuityCount.AutoSize = true;
-            this.lblContinuityCount.Location = new System.Drawing.Point(2, 2);
-            this.lblContinuityCount.Name = "lblContinuityCount";
-            this.lblContinuityCount.Size = new System.Drawing.Size(89, 12);
-            this.lblContinuityCount.TabIndex = 0;
-            this.lblContinuityCount.Text = "连续报警数量：";
-            // 
-            // txtContinuityCount
-            // 
-            this.txtContinuityCount.Location = new System.Drawing.Point(2, 22);
-            this.txtContinuityCount.Name = "txtContinuityCount";
-            this.txtContinuityCount.ReadOnly = true;
-            this.txtContinuityCount.Size = new System.Drawing.Size(100, 21);
-            this.txtContinuityCount.TabIndex = 1;
-            // 
-            // btnContinuitySetting
-            // 
-            this.btnContinuitySetting.Location = new System.Drawing.Point(107, 21);
-            this.btnContinuitySetting.Name = "btnContinuitySetting";
-            this.btnContinuitySetting.Size = new System.Drawing.Size(75, 23);
-            this.btnContinuitySetting.TabIndex = 2;
-            this.btnContinuitySetting.Text = "设置";
-            this.btnContinuitySetting.UseVisualStyleBackColor = true;
-            this.btnContinuitySetting.Click += new System.EventHandler(this.btnContinuitySetting_Click);
-            // 
-            // lblSetZero
-            // 
-            this.lblSetZero.AutoSize = true;
-            this.lblSetZero.Location = new System.Drawing.Point(2, 5);
-            this.lblSetZero.Name = "lblSetZero";
-            this.lblSetZero.Size = new System.Drawing.Size(113, 12);
-            this.lblSetZero.TabIndex = 0;
-            this.lblSetZero.Text = "产量清零设置：点动";
-            // 
-            // lblTime
-            // 
-            this.lblTime.AutoSize = true;
-            this.lblTime.Location = new System.Drawing.Point(580, 93);
-            this.lblTime.Name = "lblTime";
-            this.lblTime.Size = new System.Drawing.Size(29, 12);
-            this.lblTime.TabIndex = 2;
-            this.lblTime.Text = "时间";
-            // 
             // timer1
             // 
             this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // lblRegisterState
+            // btnNet
             // 
-            this.lblRegisterState.AutoSize = true;
-            this.lblRegisterState.Location = new System.Drawing.Point(26, 96);
-            this.lblRegisterState.Name = "lblRegisterState";
-            this.lblRegisterState.Size = new System.Drawing.Size(41, 12);
-            this.lblRegisterState.TabIndex = 3;
-            this.lblRegisterState.Text = "未注册";
-            // 
-            // btnRegister
-            // 
-            this.btnRegister.Location = new System.Drawing.Point(26, 59);
-            this.btnRegister.Name = "btnRegister";
-            this.btnRegister.Size = new System.Drawing.Size(75, 23);
-            this.btnRegister.TabIndex = 4;
-            this.btnRegister.Text = "注册";
-            this.btnRegister.UseVisualStyleBackColor = true;
-            this.btnRegister.Click += new System.EventHandler(this.btnRegister_Click);
+            this.btnNet.Location = new System.Drawing.Point(553, 168);
+            this.btnNet.Name = "btnNet";
+            this.btnNet.Size = new System.Drawing.Size(76, 21);
+            this.btnNet.TabIndex = 29;
+            this.btnNet.Text = "以太网配置配置";
+            this.btnNet.UseVisualStyleBackColor = true;
+            this.btnNet.Click += new System.EventHandler(this.btnNet_Click);
             // 
             // FrmMain
             // 
@@ -328,12 +328,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.picHead)).EndInit();
             this.pnlCenter.ResumeLayout(false);
             this.pnlCenter.PerformLayout();
-            this.pnlBot.ResumeLayout(false);
-            this.pnlBot.PerformLayout();
-            this.pnlSetZero.ResumeLayout(false);
-            this.pnlSetZero.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.pnlSetZero.ResumeLayout(false);
+            this.pnlSetZero.PerformLayout();
+            this.pnlBot.ResumeLayout(false);
+            this.pnlBot.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -342,7 +342,6 @@
 
         private System.Windows.Forms.Panel pnl;
         private System.Windows.Forms.Button btnPort;
-        private System.Windows.Forms.Button btnStart;
         private System.Windows.Forms.Panel pnlCenter;
         private System.Windows.Forms.Panel pnlBot;
         private System.Windows.Forms.Label lblErrorContent;
@@ -365,6 +364,7 @@
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Label lblRegisterState;
         private System.Windows.Forms.Button btnRegister;
+        private System.Windows.Forms.Button btnNet;
     }
 }
 
