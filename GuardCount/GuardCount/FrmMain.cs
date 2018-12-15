@@ -12,10 +12,9 @@ namespace GuardCount
 {
     public partial class FrmMain : Form
     {
-        private Collects.TcpDeviceCollect tcpDevice;
+        private Collects.DeviceBase device;
         private Dictionary<int, StUserControl> AllSwitch { get; set; } = new Dictionary<int, StUserControl>();
         private RunCollect Run { get; set; } = new RunCollect();
-        //private Collects.ComDeviceCollect deviceCollect = new Collects.ComDeviceCollect();
         public FrmMain()
         {
             InitializeComponent();
@@ -139,31 +138,29 @@ namespace GuardCount
         }
         private void btnPort_Click(object sender, EventArgs e)
         {
-            FrmTCPConfig frmTCPConfig = new FrmTCPConfig();
-            if(frmTCPConfig.ShowDialog(this) == DialogResult.OK)
+            FrmSerialPortConfig frmSerialPortConfig = new FrmSerialPortConfig();
+            if(frmSerialPortConfig.ShowDialog(this) == DialogResult.OK)
             {
-                this.btnStart.Focus();
                 this.btnStop_Click(this.btnStop, EventArgs.Empty);
-                this.btnStart_Click(this.btnStart, EventArgs.Empty);
+                this.StartCom();
             }
+            
         }
 
         private void btnStart_Click(object sender, EventArgs e)
         {
             this.lblErrorContent.ResetText();
-            this.btnStart.Enabled = false;
-            this.tcpDevice = new Collects.TcpDeviceCollect(StConfig.IPAddress, StConfig.Port);
-            this.tcpDevice.Run = this.Run;
-            this.tcpDevice.ValueChangedEvent += this.TcpDevice_ValueChangedEvent;
-            this.tcpDevice.ExceptionMessageEvent += TcpDevice_ExceptionMessageEvent;
-            this.tcpDevice.Start();
-            if (this.tcpDevice.Connected)
+            this.device = new Collects.TcpDeviceCollect(StConfig.IPAddress, StConfig.Port);
+            this.device.Run = this.Run;
+            this.device.ValueChangedEvent += this.TcpDevice_ValueChangedEvent;
+            this.device.ExceptionMessageEvent += TcpDevice_ExceptionMessageEvent;
+            this.device.Start();
+            if (this.device.Connected)
             {
                 this.btnStop.Enabled = true;
             }
             else
             {
-                this.btnStart.Enabled = true;
                 this.btnPort.Focus();
             }
         }
@@ -186,11 +183,11 @@ namespace GuardCount
 
         private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if(this.tcpDevice != null)
+            if(this.device != null)
             {
-                this.tcpDevice.ValueChangedEvent -= this.TcpDevice_ValueChangedEvent;
-                this.tcpDevice.ExceptionMessageEvent -= this.TcpDevice_ExceptionMessageEvent;
-                this.tcpDevice.Dispose();
+                this.device.ValueChangedEvent -= this.TcpDevice_ValueChangedEvent;
+                this.device.ExceptionMessageEvent -= this.TcpDevice_ExceptionMessageEvent;
+                this.device.Dispose();
             }
         }
         private void ResetValue()
@@ -209,23 +206,22 @@ namespace GuardCount
                 stUserControl.ResetValue();
             }
             this.txtContinuityCount.Text = "0";
+            this.lblErrorContent.Text = string.Empty;
         }
         private void btnStop_Click(object sender, EventArgs e)
         {
-            if(this.tcpDevice != null)
+            if(this.device != null)
             {
-                this.tcpDevice.ValueChangedEvent -= this.TcpDevice_ValueChangedEvent;
-                this.tcpDevice.ExceptionMessageEvent -= this.TcpDevice_ExceptionMessageEvent;
-                this.tcpDevice.Dispose();
+                this.device.ValueChangedEvent -= this.TcpDevice_ValueChangedEvent;
+                this.device.ExceptionMessageEvent -= this.TcpDevice_ExceptionMessageEvent;
+                this.device.Dispose();
                 this.ResetValue();
             }
-            this.btnStart.Enabled = true;
             this.btnStop.Enabled = false;
         }
 
         private void FrmMain_Activated(object sender, EventArgs e)
         {
-            this.btnStart.Focus();
         }
 
         private void btnContinuitySetting_Click(object sender, EventArgs e)
@@ -282,6 +278,54 @@ namespace GuardCount
                 this.btnRegister.Visible = false;
                 this.lblRegisterState.Text = "软件已注册";
                 this.LoadIsRegister(DevCommon.IsRegister);
+            }
+        }
+        private void StartNet()
+        {
+            this.lblErrorContent.ResetText();
+            this.device = new Collects.TcpDeviceCollect(StConfig.IPAddress, StConfig.Port);
+            this.device.Run = this.Run;
+            this.device.ValueChangedEvent += this.TcpDevice_ValueChangedEvent;
+            this.device.ExceptionMessageEvent += TcpDevice_ExceptionMessageEvent;
+            this.device.Start();
+            if (this.device.Connected)
+            {
+                this.btnStop.Enabled = true;
+            }
+            else
+            {
+                this.btnPort.Focus();
+            }
+        }
+        private void StartCom()
+        {
+            ComConfigModel comConfigModel = ComConfigModel.GetConfigModel();
+            this.device = new Collects.ComDeviceCollect(comConfigModel.PortName,
+                comConfigModel.BaudRate, comConfigModel.Parity, comConfigModel.DataBits, comConfigModel.StopBits);
+            foreach(Variable item in this.Run.AllVariable.Values)
+            {
+                item.SlaveAddress = comConfigModel.SlaveAddress;
+            }
+            this.device.Run = this.Run;
+            this.device.ValueChangedEvent += this.TcpDevice_ValueChangedEvent;
+            this.device.ExceptionMessageEvent += TcpDevice_ExceptionMessageEvent;
+            this.device.Start();
+            if (this.device.Connected)
+            {
+                this.btnStop.Enabled = true;
+            }
+            else
+            {
+                this.btnPort.Focus();
+            }
+        }
+        private void btnNet_Click(object sender, EventArgs e)
+        {
+            FrmTCPConfig frmTCPConfig = new FrmTCPConfig();
+            if (frmTCPConfig.ShowDialog(this) == DialogResult.OK)
+            {
+                this.btnStop_Click(this.btnStop, EventArgs.Empty);
+                this.StartNet();
             }
         }
     }

@@ -143,7 +143,14 @@ namespace GuardCount
             File.WriteAllBytes(path, byteArray);
             return true;
         }
-
+        public static string MakeRegisterCode(string machineCode)
+        {
+            machineCode = machineCode.Replace(" ", "");
+            var base64 = HwEncryp.Encode(machineCode);
+            string hash = GetHash(base64);
+            string code = MakeOnlyNumberCode(hash);
+            return code;
+        }
         public static bool ValidRegCode(string regCode)
         {
             regCode = regCode.Replace(" ", "").Replace("　", "");

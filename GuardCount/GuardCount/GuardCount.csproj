@@ -94,6 +94,7 @@
     <Compile Include="Collects\ComDeviceCollect.cs" />
     <Compile Include="Collects\DeviceBase.cs" />
     <Compile Include="Collects\TcpDeviceCollect.cs" />
+    <Compile Include="ComConfigModel.cs" />
     <Compile Include="DevCommon.cs" />
     <Compile Include="EvaluateModel.cs" />
     <Compile Include="FrmBaseDocument.cs">
@@ -206,7 +207,7 @@
   <ItemGroup>
     <Content Include="2008471956225_2.ico" />
     <Content Include="AddressConfig.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Evaluate.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

@@ -10,8 +10,8 @@ namespace GuardCount
 {
     public static class DevCommon
     {
-        public static string Version => "1.0.0.1";
-        public static string VersionTime => "2018-12-01 23:50:00";
+        public static string Version => "1.0.0.2";
+        public static string VersionTime => "2018-12-15 14:00:00";
         public static void MsgBox(this Control @this, string msg)
         {
             MessageBox.Show(@this, msg);
