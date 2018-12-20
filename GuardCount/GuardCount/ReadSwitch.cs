@@ -26,7 +26,9 @@ namespace GuardCount
                 this.cboSelect.Items.Add(item);
             });
             if (this.cboSelect.Items.Count > 0)
-                this.cboSelect.SelectedIndex = 0;
+            {
+                this.cboSelect.SelectedIndex = this.CurrentVariable.GetIndex();
+            }
         }
         private void ReadSwitch_Load(object sender, EventArgs e)
         {
@@ -71,6 +73,10 @@ namespace GuardCount
         public override void ResetValue()
         {
             this.SetValue(false);
+        }
+        public override void Save()
+        {
+            this.CurrentVariable.SaveIndex(this.cboSelect.SelectedIndex);
         }
     }
 }

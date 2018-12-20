@@ -51,15 +51,15 @@ namespace GuardCount
             this.Text = item.GetAttrText();
             this.Id = Guid.NewGuid().GetHashCode();
         }
+        public static string AddressConfig => "AddressConfig.xml";
         public static Dictionary<int, Variable> GetConfig()
         {
-            string fileName = "AddressConfig.xml";
-            if(!File.Exists(fileName))
+            if(!File.Exists(AddressConfig))
             {
                 throw new Exception("地址配置文件不存在！");
             }
             Dictionary<int, Variable> dict = new Dictionary<int, Variable>();
-            XDocument doc = XDocument.Load(fileName);
+            XDocument doc = XDocument.Load(AddressConfig);
             foreach(XElement xitems in doc.Root.XPathSelectElements("//items"))
             {
                 foreach(XElement xitem in xitems.Nodes())
@@ -74,6 +74,41 @@ namespace GuardCount
                 }
             }
             return dict;
+        }
+        public void SaveIndex(int index)
+        {
+            XDocument doc = XDocument.Load(AddressConfig);
+            XElement xele = doc.Root.XPathSelectElement($".//*[local-name()='items' and @Function='{this.Function}']");
+            if(xele != null)
+            {
+                foreach(XElement xitem in xele.Nodes())
+                {
+                    ushort address = xitem.GetAttrAddress();
+                    if(address == this.Address)
+                    {
+                        xitem.SetAttributeValue("index", index);
+                        break;
+                    }
+                }
+                doc.Save(AddressConfig);
+            }
+        }
+        public int GetIndex()
+        {
+            XDocument doc = XDocument.Load(AddressConfig);
+            XElement xele = doc.Root.XPathSelectElement($"//*[local-name()='items' and @Function='{this.Function}']");
+            if (xele != null)
+            {
+                foreach (XElement xitem in xele.Nodes())
+                {
+                    ushort address = xitem.GetAttrAddress();
+                    if (address == this.Address)
+                    {
+                        return xitem.GetAttr<int>("index");
+                    }
+                }
+            }
+            return 0;
         }
     }
 }

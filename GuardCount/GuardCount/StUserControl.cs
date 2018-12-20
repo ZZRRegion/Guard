@@ -37,5 +37,9 @@ namespace GuardCount
         {
 
         }
+        public virtual void Save()
+        {
+
+        }
     }
 }

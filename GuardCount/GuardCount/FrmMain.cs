@@ -183,6 +183,10 @@ namespace GuardCount
 
         private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
+            foreach(KeyValuePair<int, StUserControl> item in this.AllSwitch)
+            {
+                item.Value.Save();
+            }
             if(this.device != null)
             {
                 this.device.ValueChangedEvent -= this.TcpDevice_ValueChangedEvent;
