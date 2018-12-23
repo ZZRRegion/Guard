@@ -9,6 +9,9 @@ using System.Threading;
 
 namespace GuardCount.Collects
 {
+    /// <summary>
+    /// COM收集
+    /// </summary>
     public class ComDeviceCollect:DeviceBase
     {
         public ComConfigModel ComConfigModel { get; private set; }

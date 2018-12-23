@@ -11,6 +11,9 @@ using System.Xml.XPath;
 
 namespace GuardCount
 {
+    /// <summary>
+    /// COM配置
+    /// </summary>
     public class ComConfigModel
     {
         public string PortName { get; set; }

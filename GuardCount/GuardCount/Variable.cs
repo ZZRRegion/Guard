@@ -9,18 +9,54 @@ using System.Xml.XPath;
 
 namespace GuardCount
 {
+    /// <summary>
+    /// 变量
+    /// </summary>
     public class Variable
     {
+        /// <summary>
+        /// 变量唯一ID
+        /// </summary>
         public int Id { get; set; }
+        /// <summary>
+        /// 变量数据类型
+        /// </summary>
         public string DataType { get; set; }
+        /// <summary>
+        /// 变量显示文本
+        /// </summary>
         public string Text { get; set; }
+        /// <summary>
+        /// 设备站号
+        /// </summary>
         public byte SlaveAddress { get; set; }
+        /// <summary>
+        /// 值
+        /// </summary>
         public bool BoolValue { get; set; }
+        /// <summary>
+        /// 值
+        /// </summary>
         public ushort UshortValue { get; set; }
+        /// <summary>
+        /// 值
+        /// </summary>
         public int IntValue { get; set; }
+        /// <summary>
+        /// 实际地址
+        /// </summary>
         public ushort Address { get; set; }
+        /// <summary>
+        /// 地址类型
+        /// </summary>
         public byte AddressType { get; set; }
+        /// <summary>
+        /// 地址长度
+        /// </summary>
         public ushort AddressLength { get; set; }
+        /// <summary>
+        /// 功能
+        /// </summary>
         public string Function { get; set; }
         /// <summary>
         /// 变化次数
