@@ -49,15 +49,6 @@ namespace GuardCount
             }
         }
 
-        //去除空格的，用于云服务的
-        public static string MachineCodeForHwCloud
-        {
-            get
-            {
-                return MachineCode.Replace(" ", "");
-            }
-        }
-
         private static string MakeOnlyNumberCode(string v)
         {
             string result = "";
@@ -110,39 +101,7 @@ namespace GuardCount
             return formatRes;
         }
 
-        /// <summary>
-        /// 传入注册码，验证是否正确
-        /// </summary>
-        /// <param name="regCode"></param>
-        /// <returns></returns>
-        public static bool IsRegistered()
-        {
-            //注册码的算法是：把MachineCode进行base64编码，然后再进行md5编码，然后与机器码一样转换
-            var path = System.IO.Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Haiwell\\Scada\\UserInfo\\user.dat");
-            if (File.Exists(path))
-            {
-                var bytes = System.IO.File.ReadAllBytes(path);
-                string regCode = System.Text.Encoding.Default.GetString(bytes);
-                if (!string.IsNullOrEmpty(regCode))
-                {
-                    regCode = HwEncryp.Decode(regCode);
-                    return ValidRegCode(regCode);
-                }
-            }
-            return false;
-        }
-
-        public static bool WriteRegCode(string regCode)
-        {
-            regCode = regCode.Replace(" ", "").Replace("　", "");
-            var path = System.IO.Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Haiwell\\Scada\\UserInfo\\user.dat");
-            if (!Directory.Exists(Path.GetDirectoryName(path)))
-                Directory.CreateDirectory(Path.GetDirectoryName(path));
-            regCode = HwEncryp.Encode(regCode);
-            byte[] byteArray = System.Text.Encoding.Default.GetBytes(regCode);
-            File.WriteAllBytes(path, byteArray);
-            return true;
-        }
+        
 
         public static bool ValidRegCode(string regCode)
         {

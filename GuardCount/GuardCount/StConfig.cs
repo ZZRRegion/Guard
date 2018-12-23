@@ -8,6 +8,9 @@ using System.IO;
 
 namespace GuardCount
 {
+    /// <summary>
+    /// 一般配置信息
+    /// </summary>
     public static class StConfig
     {
         private static string FileName => "config.json";

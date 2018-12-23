@@ -243,7 +243,8 @@ namespace GuardCount
                         {
                             lock (this.Run.LockObj)
                             {
-                                this.Run.WriteUshorValue.Add(variable.Id, value);
+                                if(!this.Run.WriteUshorValue.ContainsKey(variable.Id))
+                                    this.Run.WriteUshorValue.Add(variable.Id, value);
                             }
                         }
                     }

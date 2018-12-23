@@ -8,6 +8,9 @@ using System.Net;
 using System.Threading;
 namespace GuardCount.Collects
 {
+    /// <summary>
+    /// 以太网收集
+    /// </summary>
     public class TcpDeviceCollect:DeviceBase
     {
         private string IpAddress;
